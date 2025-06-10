@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Repository namaken
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Tijd bepalen
         run: |
