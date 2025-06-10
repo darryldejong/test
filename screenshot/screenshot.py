@@ -10,7 +10,7 @@ class ScreenshotApp:
         self.btn_capture = tk.Button(window, text="📷", font=("Comic Sans MS", 30), command=self.start_capture, bd=0, fg="blue")
         self.btn_capture.pack(padx=20, pady=(20, 2), expand=True)
 
-        self.lbl_version = tk.Label(window, text="Release versie V1.0.1", font=("Comic Sans MS", 12), fg="grey")
+        self.lbl_version = tk.Label(window, text="Release versie V1.0.2", font=("Comic Sans MS", 12), fg="grey")
         self.lbl_version.pack(pady=(0, 10))
 
         self.selection_overlay = None
