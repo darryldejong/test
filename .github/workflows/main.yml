@@ -2,7 +2,7 @@ name: Regel automatisch bijwerken
 
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 2 * * 3'
   workflow_dispatch:
 
 jobs:
