@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Repository namaken
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tijd bepalen
         run: |
@@ -27,5 +29,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add README.md
-          git diff --cached --quiet || git commit -m "🕒 README.md bijgewerkt op: $NOW_NL"
+          git diff --cached --quiet || git commit -m "README.md bijgewerkt op: $NOW_NL"
           git push
