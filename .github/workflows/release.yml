@@ -1,0 +1,59 @@
+name: Maak nieuwe release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository
+        uses: actions/checkout@v4
+
+      - name: Verify version.txt exists
+        run: |
+          if [ ! -f version.txt ]; then
+            echo "1.0.0" > version.txt
+          fi
+
+      - name: Read current version
+        id: get_version
+        run: |
+          VERSION=$(cat version.txt)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Patch version
+        id: increment_version
+        run: |
+          OLD_VERSION=${{ steps.get_version.outputs.version }}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$OLD_VERSION"
+          PATCH=$((PATCH + 1))
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo $NEW_VERSION > version.txt
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update version
+        run: |
+          NEW_VERSION=${{ steps.increment_version.outputs.new_version }}
+          NEW_VERSION_WITH_V="V$NEW_VERSION"
+          sed -i "s/Release versie V[0-9]\+\.[0-9]\+\.[0-9]\+/Release versie $NEW_VERSION_WITH_V/" screenshot/screenshot.py
+
+      - name: Add to GitHub
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add version.txt screenshot/screenshot.py
+          git commit -m "Bump version to ${{ steps.increment_version.outputs.new_version }}"
+          git push
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ steps.increment_version.outputs.new_version }}"
+          name: "Release v${{ steps.increment_version.outputs.new_version }}"
+          body: "Versie gemaakt door GitHub Actions regel v${{ steps.increment_version.outputs.new_version }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
